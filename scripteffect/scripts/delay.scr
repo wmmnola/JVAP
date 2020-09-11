@@ -1,0 +1,38 @@
+/* Delay by factor a (in seconds at 44kHz) with feedback b
+ */
+
+import org.jvaptools.scripteffect.*;
+
+org.jvaptools.VstPluginImpl plugin;
+
+float[] buffer1;
+float[] buffer2;
+int bufferpointer;
+
+public void init(org.jvaptools.VstPluginImpl owner) {
+  this.plugin=owner; 
+  buffer1=new float[44100];
+  buffer2=new float[44100];
+  bufferpointer=0;
+}
+
+public void close() {}
+
+public void onMidiEvent(javax.sound.midi.MidiMessage message, long timeStamp) {}
+
+public void processReplacing(vstmain plugin,float a,float b,float c,float d,float[][] inputs, float[][] outputs, int sampleFrames)
+{ 
+  float[] out1 = outputs[0];
+  float[] out2 = outputs[1];
+  float[] in1 = inputs[0];
+  float[] in2 = inputs[1];
+  int bufferpointer2=(44099+bufferpointer-(int)(a*44099))%44100;
+  for (int i = 0; i < sampleFrames; i++) {
+    out1[i] = in1[i]+b*buffer1[bufferpointer2];
+    out2[i] = in2[i]+b*buffer2[bufferpointer2];
+    buffer1[bufferpointer]=out1[i];
+    buffer2[bufferpointer]=out2[i];
+    bufferpointer=(bufferpointer+1)%44100;
+    bufferpointer2=(bufferpointer2+1)%44100;
+  }
+}

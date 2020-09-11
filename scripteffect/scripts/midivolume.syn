@@ -1,0 +1,47 @@
+/* Changes the volume of all incoming midi messages to parameter a*127
+ *
+ * 
+ */
+
+
+
+import org.jvaptools.scripteffect.*;
+
+org.jvaptools.VstPluginImpl plugin;
+
+public void init(org.jvaptools.VstPluginImpl owner) {
+  this.plugin=owner; 
+  // Set Volume to 1
+  scale=1.0f;
+}
+
+public void close() {}
+
+float scale;
+
+public void onMidiEvent(javax.sound.midi.MidiMessage message, long timeStamp) {
+  // If message of type ShortMessage
+  if(message instanceof javax.sound.midi.ShortMessage ){
+      javax.sound.midi.ShortMessage sm=(javax.sound.midi.ShortMessage)message;
+      int command=sm.getCommand();
+      int velocity=sm.getData2();
+      // Test if message is a Note on 
+      if((command==javax.sound.midi.ShortMessage.NOTE_ON)&&(velocity!=0)) {
+           try{
+              // Set a new message volume
+              sm.setMessage(command,sm.getChannel(),sm.getData1(),(int)(127*scale));
+           } catch(javax.sound.midi.InvalidMidiDataException e){}
+      }
+      plugin.send(sm,timeStamp);
+  }
+}
+
+public void processReplacing(vstmainSynth plugin,float a,float b,float c,float d, float[][] outputs, int sampleFrames)
+{ 
+scale = a;
+float[] out1 = outputs[0];
+float[] out2 = outputs[1];
+for (int i = 0; i < sampleFrames; i++) {
+out1[i] = 0;
+out2[i] = 0;
+} }

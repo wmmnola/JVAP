@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Generated default configuration</comment>
+
+<entry key="Name">DefaultConfig</entry>
+<entry key="MIDI-Out">MIDI Yoke NT:  1</entry>
+<entry key="MIDI-In">MIDI Yoke NT:  2</entry>
+<entry key="ParameterCount">2</entry>
+
+<entry key="Parameter1Name">Test1</entry>
+<entry key="Parameter1Controller">11</entry>
+<entry key="Parameter1Channel">1</entry>
+<entry key="Parameter1Label"> label</entry>
+<entry key="Parameter1ValueCount">3</entry>
+<entry key="Parameter1Value1">Val1</entry>
+<entry key="Parameter1Value2">Val2</entry>
+<entry key="Parameter1Value3">Val3</entry>
+
+<entry key="Parameter2Name">Test2</entry>
+<entry key="Parameter2Controller">12</entry>
+<entry key="Parameter2Channel">16</entry>
+<entry key="Parameter2Label"> label2</entry>
+<entry key="Parameter2ValueCount">0</entry>
+
+</properties>

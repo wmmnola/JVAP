@@ -1,0 +1,64 @@
+/* Resonant 2-Pole LP 
+ * Parameter a is the cutoff frequency, parameter b is the resonance, parameter c can be used to set the maximum cutoff frequency 
+ * and parameter d to finetune the resonance.
+ * Algorithm is from www.musicdsp.org. Posted by Daniel Werner from http://experimentalscene.com/
+ * The algorithm is a modified version of the tweaked butterworth lowpass filter by Patrice Tarrabia posted on musicdsp.org's archives.
+ */
+
+import org.jvaptools.scripteffect.*;
+
+org.jvaptools.VstPluginImpl plugin;
+
+float pi;
+float samplerate;
+float c, csq, resonance, q, a0, a1, a2, b1, b2;
+float in11,in12,in21,in22,out11,out12,out21,out22;
+float p1smooth;
+float p1filtercoeff;
+
+public void init(org.jvaptools.VstPluginImpl owner) {
+  this.plugin=owner; 
+  pi=3.1415926535897932384626433832795f;
+  samplerate=44100.0f;
+  in11=0;in12=0;in21=0;in22=0;
+  out11=0;out12=0;out21=0;out22=0;
+  this.plugin.setParameter("a","1.0");
+  this.plugin.setParameter("b","0.8");
+  this.plugin.setParameter("c","1.0");
+  this.plugin.setParameter("d","0.99");
+  this.p1smooth=1.0f;
+ this.p1filtercoeff=0.0007f;
+}
+
+public void close() {}
+
+public void onMidiEvent(javax.sound.midi.MidiMessage message, long timeStamp) {}
+
+
+// Warning: Parameter a,b,c and d from the host are called p1,p2,p3 and p4!
+public void processReplacing(vstmain plugin,float p1,float p2,float p3,float p4,float[][] inputs, float[][] outputs, int sampleFrames)
+{ 
+  float[] out1 = outputs[0];
+  float[] out2 = outputs[1];
+  float[] in1 = inputs[0];
+  float[] in2 = inputs[1];
+  
+ 
+  for (int i = 0; i < sampleFrames; i++) {    
+    if((i%20)==0) {
+      p1smooth=p1filtercoeff*p1+(1.0f-p1filtercoeff)*p1smooth;
+      c = 1.0f / ((float)java.lang.Math.tan(pi * ((0.001f+p1smooth*p3) / 2.15f)));
+      csq = c * c;
+      q = (float)java.lang.Math.sqrt(2.0f) * (1-p2)*(1-p4);
+      a0 = 1.0f / (1.0f + (q * c) + (csq));
+      a1 = 2.0f * a0;
+      a2 = a0;
+      b1 = (2.0f * a0) * (1.0f - csq);
+      b2 = a0 * (1.0f - (q * c) + csq);
+    }
+    out1[i] = in1[i]*a0 + in11*a1 + in12*a2 - out11*b1 - out12*b2;
+    out2[i] = in2[i]*a0 + in21*a1 + in22*a2 - out21*b1 - out22*b2;
+    out12=out11; out11=out1[i]; in12=in11; in11=in1[i];
+    out22=out21; out21=out2[i]; in22=in21; in21=in1[i];
+  } 
+}

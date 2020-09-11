@@ -1,0 +1,53 @@
+Building JVAPTools:
+-------------------
+
+To build JVAPTools you need the library jVSTwRapper. 
+
+You can download it at: http://jvstwrapper.sourceforge.net/
+
+Just add all Java files from JVAPTools to a project in your favorite IDE.
+Add the jar files jVSTsYstem_bin.jar and jVSTwRapper_bin.jar
+to the needed libraries.
+
+If you do not use a IDE, go to the jvaptools folder, put all needed jars into it and compile it with:
+
+javac -classpath jVSTsYstem_bin.jar:jVSTwRapper_bin.jar org\jvaptools\*.java org\jvaptools\PatternEditor\*.java
+
+Once all java files are compiled, add all class files to a jar file
+named: jvaptools.jar
+
+jar cvf jvaptools.jar org\jvaptools\*.class org\jvaptools\PatternEditor\*.class
+
+
+
+Building Scripteffect:
+----------------------
+
+To build Scripteffect you need the library jVSTwRapper, JVAPTools and
+Janino. You can download Janino at: http://www.janino.net/
+
+Add all Java files from Scripteffect to a new project in your
+IDE. Add the jar files jVSTsYstem_bin.jar, jVSTwRapper_bin.jar, 
+jvaptools.jar (builded befor) and janino.jar to the libraries
+and compile it.
+
+If you do not use a IDE, go to the scripteffect folder, put all needed jars into it and compile it with:
+
+javac -classpath jVSTsYstem_bin.jar:jVSTwRapper_bin.jar:jvaptool.jar org\jvaptools\scripteffect\*.java
+
+Once all java files are compiled, add all class files to a jar file
+named: jvaptools.jar
+
+jar cvf scripteffect.jar org\jvaptools\scripteffect\*.class
+
+Installing Scripteffect:
+------------------------
+
+Copy jVSTwRapper.dll a new file called scripteffect.dll. Put this file into your VST folder. Put the jars jVSTwRapper_bin.jar, 
+scripteffect.jar, janino.jar, jvaptools.jar and jVSTsYstem_bin.jar in the same directory. Put the scripteffect.ini file in the same directory.
+
+Running Scripteffect:
+---------------------
+
+Just start your VST host and insert the pugin in Your audio project.
+

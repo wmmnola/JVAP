@@ -1,0 +1,74 @@
+
+
+// Imports:
+import jass.engine.Sink;
+import jass.engine.SinkIsFullException;
+import jass.engine.Source;
+import jass.generators.RandOut;
+import org.jvaptools.scripteffect.*;
+
+
+// Class Body
+class ScripteffectJAASSink implements Sink {
+
+
+        public Object addSource(Source s) throws SinkIsFullException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+
+        public void removeSource(Source s) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+
+        public Source[] getSources() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+}
+
+org.jvaptools.VstPluginImpl plugin;
+ScripteffectJAASSink mySink;
+RandOut noise;
+long time = 0;
+float volume = 0.5f;
+int sampleFrames=1024;
+
+
+    public void init(org.jvaptools.VstPluginImpl owner) {
+        this.plugin = owner;
+        mySink = new ScripteffectJAASSink();
+        noise=new RandOut(sampleFrames);
+        noise.setTime(time);
+    }
+
+public void close() {}
+
+public void onMidiEvent(javax.sound.midi.MidiMessage message, long timeStamp) {}
+
+    public void processReplacing(vstmainSynth plugin, float a, float b, float c, float d, float[][] outputs, int sampleFrames) {
+        volume = a;
+        if(this.sampleFrames!=sampleFrames) {
+            this.sampleFrames=sampleFrames;
+            noise.setBufferSize(this.sampleFrames);
+        }
+        try {
+            time++;
+            float[] noisebuffer =noise.getBuffer(time);
+            float[] out1 = outputs[0];
+            float[] out2 = outputs[1];
+            for (int i = 0; i < sampleFrames; i++) {
+                out1[i] = noisebuffer[i]*volume;
+                out2[i] = noisebuffer[i]*volume;
+            }
+        } catch (Exception e) {
+            float[] out1 = outputs[0];
+            float[] out2 = outputs[1];
+            for (int i = 0; i < sampleFrames; i++) {
+                out1[i] = 0;
+                out2[i] = 0;
+            }
+
+        }
+    }
